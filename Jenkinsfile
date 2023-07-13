@@ -12,20 +12,6 @@ pipeline {
 
    stages {
 
-      stage("init") {
-
-         steps {
-
-            script {
-
-               gv = load "script.groovy"
-
-            }
-
-         }
-
-      }
-
       stage("Checkout") {
 
          steps {
@@ -46,51 +32,15 @@ pipeline {
 
       }
 
-      stage("test") {
-
-         when {
-
-            expression {
-
-               params.executeTests
-
-            }
-
-         }
-
-         steps {
-
-            script {
-
-               gv.testApp()
-
-            }
-
-         }
-
-      }
-
       stage("Tag and Push") {
 
          steps {
 
-            withCredentials([[$class: 'UsernamePasswordMultiBinding',
+              sh "docker tag jenkins-pipeline_web:latest kh98lee/jenkins-app:${BUILD_NUMBER}"
 
-            credentialsId: 'docker-hub', 
-
-            usernameVariable: 'DOCKER_USER_ID', 
-
-            passwordVariable: 'DOCKER_USER_PASSWORD'
-
-            ]]) {
-
-               sh "docker tag jenkins-pipeline_web:latest kh98lee/jenkins-app:${BUILD_NUMBER}"
-
-               sh "docker login -u kh98lee -p dckr_pat_py-Hwk4B8MHUUqyMJkY1RHuXZPE"
+               sh "docker login -u kh98lee -p rjsgml6010!"
 
                sh "docker push kh98lee/jenkins-app:${BUILD_NUMBER}"
-
-            }
 
          }
 
